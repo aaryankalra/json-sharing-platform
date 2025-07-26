@@ -1,46 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { Pencil } from "lucide-react";
+import { useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { json } from "@codemirror/lang-json";
 import { supabase } from "../../utils/supabase.js";
-import { FilePlus } from "lucide-react";
 
-const AddJSON = ({ user, onCreate }) => {
-  const navigate = useNavigate();
-
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState('{\n  "example": true\n}');
+const Edit = ({ file, modalID, onUpdate }) => {
+  const [title, setTitle] = useState(file.name);
+  const [content, setContent] = useState(JSON.stringify(file.content, null, 2));
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSave = async () => {
     try {
       setLoading(true);
-
       const parsed = JSON.parse(content);
+      console.log(parsed);
 
-      const { error } = await supabase.from("json_files").insert([
-        {
-          user_id: user.id,
+      const { error } = await supabase
+        .from("json_files")
+        .update({
           name: title,
           content: parsed,
-          is_public: false,
-        },
-      ]);
+        })
+        .eq("id", file.id);
 
       if (error) {
         alert(error);
       }
 
-      setContent('{\n  "example": true\n}');
-      setTitle("");
-
-      alert("JSON file created.");
-      onCreate();
-      document.getElementById("modal").close();
+      alert("File updated.");
+      onUpdate();
+      document.getElementById(modalID).close();
     } catch (error) {
-      alert("Error creating file.");
+      alert("Unable to save.");
       console.error(error);
     } finally {
       setLoading(false);
@@ -50,16 +41,17 @@ const AddJSON = ({ user, onCreate }) => {
   return (
     <div>
       <button
-        className="btn btn-primary text-sm"
-        onClick={() => document.getElementById("modal").showModal()}
+        className="sm:btn btn-ghost hover:bg-blue-300"
+        onClick={() => document.getElementById(modalID).showModal()}
       >
-        <FilePlus size={20} /> Add JSON File
+        <Pencil size={18} />
+        <span className="hidden md:flex">Edit</span>
       </button>
-      <dialog id="modal" className="modal modal-bottom sm:modal-middle">
+      <dialog id={modalID} className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Create your JSON File</h3>
+          <h3 className="font-bold text-lg">Edit the JSON File</h3>
           <div className="mt-3">
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-4">
               <input
                 type="text"
                 name="title"
@@ -83,8 +75,9 @@ const AddJSON = ({ user, onCreate }) => {
                   className="btn w-full hover:bg-green-400"
                   type="submit"
                   disabled={loading}
+                  onClick={handleSave}
                 >
-                  {loading ? "Creating..." : "Create"}
+                  {loading ? "Saving..." : "Save"}
                 </button>
               </div>
             </form>
@@ -100,4 +93,4 @@ const AddJSON = ({ user, onCreate }) => {
   );
 };
 
-export default AddJSON;
+export default Edit;

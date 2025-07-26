@@ -69,32 +69,36 @@ const Navbar = () => {
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
             >
               <div className="text-center">
-                <a className="text-xl font-bold nav-heading">
-                  {"<"}
-                  <span className="text-green-600">J</span>SP
+                <a href="/" className="text-2xl font-bold nav-heading">
+                  {"<"}S<span className="text-green-600">J</span>
                   {"/>"}
                 </a>
               </div>
               <li>
-                <a>Dashboard</a>
+                <a href="/dashboard" className="text-lg">
+                  Dashboard
+                </a>
               </li>
               <li>
-                <a>About</a>
+                <a href="/about" className="text-lg">
+                  About
+                </a>
               </li>
             </ul>
           </div>
-          <a className="text-xl font-bold nav-heading hidden sm:flex">
+          <a href="/" className="text-xl font-bold nav-heading hidden sm:flex">
             {"<"}
-            <span className="text-green-600">JSON</span>SharingPlatform{"/>"}
+            Share<span className="text-green-600">JSON</span>
+            {"/>"}
           </a>
         </div>
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1">
+          <ul className="menu menu-horizontal px-1 gap-4">
             <li>
-              <a>Dashboard</a>
+              <a href="/dashboard">Dashboard</a>
             </li>
             <li>
-              <a>About</a>
+              <a href="/about">About</a>
             </li>
           </ul>
         </div>
